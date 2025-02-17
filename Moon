@@ -154,7 +154,7 @@ local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local teleportEnabled = false  
 
 Toggle:CreateToggle({  
-    Name = "Auto Teleport to Football",  
+    Name = "Auto lvl up(away only)",  
     CurrentValue = false,  
     Callback = function(state)  
         teleportEnabled = state  
