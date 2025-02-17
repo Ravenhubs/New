@@ -145,3 +145,30 @@ end
 if Ball then
     Ball.Touched:Connect(onBallTouched)
 end
+
+local Players = game:GetService("Players")  
+local player = Players.LocalPlayer  
+local character = player.Character or player.CharacterAdded:Wait()  
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")  
+
+local teleportEnabled = false  
+
+Toggle:CreateToggle({  
+    Name = "Auto Teleport to Football",  
+    CurrentValue = false,  
+    Callback = function(state)  
+        teleportEnabled = state  
+        while teleportEnabled do  
+            local ball = workspace:FindFirstChild("Football")  
+            if ball then  
+                humanoidRootPart.CFrame = ball.CFrame  
+                task.wait(0.5)  
+                if humanoidRootPart.Parent == player.Character and ball.Parent ~= workspace then  
+                    humanoidRootPart.CFrame = CFrame.new(319.823425, 10.8505239, -49.222084)  
+                    teleportEnabled = false  
+                end  
+            end  
+            task.wait(0.1)  
+        end  
+    end  
+})
