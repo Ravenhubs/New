@@ -91,7 +91,38 @@ local myPlayer = Players.LocalPlayer
 local teleportEnabled = false -- Toggle state
 
 local Toggle = Tab:CreateToggle({
-    Name = "Enable Teleport",
+    Name = "Enable Teleport -for away",
+    CurrentValue = false,
+    Flag = "FootballTeleportToggle",
+    Callback = function(state)
+        teleportEnabled = state
+    end
+})
+
+local function onBallTouched(hit)
+    if not teleportEnabled then return end
+
+    local character = hit.Parent
+    local player = Players:GetPlayerFromCharacter(character)
+
+    if player and player.Team == myPlayer.Team then
+        Ball.CFrame = teleportCFrame
+        Ball.Velocity = Vector3.zero -- Stop movement
+    end
+end
+
+if Ball then
+    Ball.Touched:Connect(onBallTouched)
+end
+
+local Players = game:GetService("Players")
+local Ball = game.Workspace:FindFirstChild("Football")
+local teleportCFrame = CFrame.new(319.823425, 10.8505239, -49.222084)
+local myPlayer = Players.LocalPlayer
+local teleportEnabled = false -- Toggle state
+
+local Toggle = Tab:CreateToggle({
+    Name = "Enable Teleport -for home",
     CurrentValue = false,
     Flag = "FootballTeleportToggle",
     Callback = function(state)
