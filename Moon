@@ -91,7 +91,7 @@ local myPlayer = Players.LocalPlayer
 local teleportEnabled = false -- Toggle state
 
 local Toggle = Tab:CreateToggle({
-    Name = "Enable Teleport -for away",
+    Name = "insta goal-for away",
     CurrentValue = false,
     Flag = "FootballTeleportToggle",
     Callback = function(state)
@@ -122,7 +122,7 @@ local myPlayer = Players.LocalPlayer
 local teleportEnabled = false -- Toggle state
 
 local Toggle = Tab:CreateToggle({
-    Name = "Enable Teleport -for home",
+    Name = "Insta goal -for home",
     CurrentValue = false,
     Flag = "FootballTeleportToggle",
     Callback = function(state)
