@@ -146,40 +146,9 @@ if Ball then
     Ball.Touched:Connect(onBallTouched)
 end
 
-local Players = game:GetService("Players")
-local Ball = game.Workspace:FindFirstChild("Football")
-local myPlayer = Players.LocalPlayer
-local character = myPlayer.Character or myPlayer.CharacterAdded:Wait()
-local teleportEnabled = false -- Toggle state
-
-local teleportCFrame = CFrame.new(319.823425, 10.8505239, -49.222084) -- Target CFrame
-
--- Toggle in Rayfield UI
-local Toggle = Tab:CreateToggle({
-    Name = "Auto lvl up(away team)",
-    CurrentValue = false,
-    Flag = "FootballTeleportCharacter",
-    Callback = function(state)
-        teleportEnabled = state
-    end
+local Button = Tab:CreateButton({
+   Name = "Semi-prodigy",
+   Callback = function()
+   game:GetService("Players").Idkforgodis.PlayerStats.Flow.Value="Prodigy"
+   end,
 })
-
-local function onBallTouched(hit)
-    if not teleportEnabled then return end
-
-    local character = hit.Parent
-    local player = Players:GetPlayerFromCharacter(character)
-
-    -- Check if the player is you and you are touching the ball
-    if player == myPlayer then
-        -- Teleport your character inside the ball (assuming the ball is a part)
-        myPlayer.Character:SetPrimaryPartCFrame(Ball.CFrame)
-        
-        -- Then teleport to the desired CFrame
-        myPlayer.Character:SetPrimaryPartCFrame(teleportCFrame)
-    end
-end
-
-if Ball then
-    Ball.Touched:Connect(onBallTouched)
-end
