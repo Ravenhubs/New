@@ -153,65 +153,31 @@ local Button = Tab:CreateButton({
    end,
 })
 
-local RunService = game:GetService("RunService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
-local KnitPath = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services")
-
-local BallService = KnitPath:WaitForChild("BallService"):WaitForChild("RE"):WaitForChild("Slide")
-local StaminaService = KnitPath:WaitForChild("StaminaService"):WaitForChild("RE"):WaitForChild("DecreaseStamina")
+local Workspace = game:GetService("Workspace")
 
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
+local targetObjectName = "Football"
 
-local destinationCFrame = CFrame.new(319.823425, 10.85055239, -49.222084)
-local animationId = "rbxassetid://18668814876"
-
-local running = false
-
-local function teleportToCFrame(cframe)
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        character.HumanoidRootPart.CFrame = cframe
-    end
-end
-
-local function playAnimation()
-    local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
-    local animation = Instance.new("Animation")
-    animation.AnimationId = animationId
-    local track = animator:LoadAnimation(animation)
-    track:Play()
-end
-
-local function checkForEnemyWithFootball()
-    for _, enemy in pairs(Players:GetPlayers()) do
-        if enemy ~= player and enemy.Character and enemy.Character:FindFirstChild("Football") then
-            -- Perform actions
-            BallService:FireServer()
-            StaminaService:FireServer(10)
-            playAnimation()
-            
-            -- Teleport actions
-            teleportToCFrame(enemy.Character.Football.CFrame)
-            wait(1) -- Delay before teleporting away
-            teleportToCFrame(destinationCFrame)
+local function teleportObjectToPlayer()
+    local targetObject = Workspace:FindFirstChild(targetObjectName)
+    
+    if targetObject and targetObject:IsA("BasePart") then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            targetObject.CFrame = humanoidRootPart.CFrame
+        else
+            warn("HumanoidRootPart not found.")
         end
+    else
+        warn("Target object '" .. targetObjectName .. "' not found.")
     end
 end
 
-local Toggle = Tab:CreateToggle({
-    Name = "Auto lvl-away",
-    CurrentValue = false,
-    Flag = "Toggle1",
-    Callback = function(Value)
-        running = Value
-        if running then
-            RunService.RenderStepped:Connect(function()
-                if running then
-                    checkForEnemyWithFootball()
-                end
-            end)
-        end
-    end
+local Button = Tab:CreateButton({
+    Name = "Teleport Football",
+    Callback = function()
+        teleportObjectToPlayer()
+    end,
 })
