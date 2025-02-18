@@ -153,41 +153,65 @@ local Button = Tab:CreateButton({
    end,
 })
 
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local KnitPath = ReplicatedStorage:WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services")
+
+local BallService = KnitPath:WaitForChild("BallService"):WaitForChild("RE"):WaitForChild("Slide")
+local StaminaService = KnitPath:WaitForChild("StaminaService"):WaitForChild("RE"):WaitForChild("DecreaseStamina")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local destinationCFrame = CFrame.new(319.823425, 10.85055239, -49.222084)
+local animationId = "rbxassetid://18668814876"
+
+local running = false
+
+local function teleportToCFrame(cframe)
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        character.HumanoidRootPart.CFrame = cframe
+    end
+end
+
+local function playAnimation()
+    local animator = humanoid:FindFirstChild("Animator") or humanoid:WaitForChild("Animator")
+    local animation = Instance.new("Animation")
+    animation.AnimationId = animationId
+    local track = animator:LoadAnimation(animation)
+    track:Play()
+end
+
+local function checkForEnemyWithFootball()
+    for _, enemy in pairs(Players:GetPlayers()) do
+        if enemy ~= player and enemy.Character and enemy.Character:FindFirstChild("Football") then
+            -- Perform actions
+            BallService:FireServer()
+            StaminaService:FireServer(10)
+            playAnimation()
+            
+            -- Teleport actions
+            teleportToCFrame(enemy.Character.Football.CFrame)
+            wait(1) -- Delay before teleporting away
+            teleportToCFrame(destinationCFrame)
+        end
+    end
+end
+
 local Toggle = Tab:CreateToggle({
-    Name = "auto lvl-away",
+    Name = "Auto lvl-away",
     CurrentValue = false,
-    Flag = "TeleportToggle",
+    Flag = "Toggle1",
     Callback = function(Value)
-        if Value then
-            -- Define target object name and destination CFrame
-            local targetObjectName = "Football"
-            local destinationCFrame = CFrame.new(319.823425, 10.85055239, -49.222084)
-
-            -- Get the player's character
-            local player = game.Players.LocalPlayer
-            local character = player.Character or player.CharacterAdded:Wait()
-
-            -- Function to teleport the character to a given CFrame
-            local function teleportToCFrame(cframe)
-                if character and character:FindFirstChild("HumanoidRootPart") then
-                    character.HumanoidRootPart.CFrame = cframe
-                else
-                    warn("HumanoidRootPart not found.")
+        running = Value
+        if running then
+            RunService.RenderStepped:Connect(function()
+                if running then
+                    checkForEnemyWithFootball()
                 end
-            end
-
-            -- Find the target object in the workspace
-            local targetObject = game.Workspace:FindFirstChild(targetObjectName)
-
-            if targetObject then
-                -- Teleport to the target object's position
-                teleportToCFrame(targetObject.CFrame)
-                wait(1) -- Wait 1 second before next teleport
-                -- Teleport to the destination CFrame
-                teleportToCFrame(destinationCFrame)
-            else
-                warn("Target object '" .. targetObjectName .. "' not found in Workspace.")
-            end
+            end)
         end
     end
 })
