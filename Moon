@@ -149,6 +149,6 @@ end
 local Button = Tab:CreateButton({
    Name = "Semi-prodigy",
    Callback = function()
-   game:GetService("Players").Idkforgodis.PlayerStats.Flow.Value="Prodigy"
+   game:GetService("Players").LocalPlayer.PlayerStats.Flow.Value="Prodigy"
    end,
 })
