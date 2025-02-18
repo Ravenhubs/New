@@ -152,3 +152,42 @@ local Button = Tab:CreateButton({
    game:GetService("Players").LocalPlayer.PlayerStats.Flow.Value="Prodigy"
    end,
 })
+
+local Toggle = Tab:CreateToggle({
+    Name = "auto lvl-away",
+    CurrentValue = false,
+    Flag = "TeleportToggle",
+    Callback = function(Value)
+        if Value then
+            -- Define target object name and destination CFrame
+            local targetObjectName = "Football"
+            local destinationCFrame = CFrame.new(319.823425, 10.85055239, -49.222084)
+
+            -- Get the player's character
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+
+            -- Function to teleport the character to a given CFrame
+            local function teleportToCFrame(cframe)
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    character.HumanoidRootPart.CFrame = cframe
+                else
+                    warn("HumanoidRootPart not found.")
+                end
+            end
+
+            -- Find the target object in the workspace
+            local targetObject = game.Workspace:FindFirstChild(targetObjectName)
+
+            if targetObject then
+                -- Teleport to the target object's position
+                teleportToCFrame(targetObject.CFrame)
+                wait(1) -- Wait 1 second before next teleport
+                -- Teleport to the destination CFrame
+                teleportToCFrame(destinationCFrame)
+            else
+                warn("Target object '" .. targetObjectName .. "' not found in Workspace.")
+            end
+        end
+    end
+})
